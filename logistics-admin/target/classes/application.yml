@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5                                                                 #初始化连接大小
+      min-idle: 5                                                                     #最小连接池数量
+      max-active: 20                                                                  #最大连接池数量
+      max-wait: 60000                                                                 #获取连接时最大等待时间，单位毫秒
+      time-between-eviction-runs-millis: 60000                                        #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      min-evictable-idle-time-millis: 300000                                          #配置一个连接在池中最小生存的时间，单位是毫秒
+  # redis 配置
+  redis:
+    # 地址
+    host: 39.99.80.36
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 0
+    # 密码
+    password: '@ab!735(pkdu&'
+    # 连接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms

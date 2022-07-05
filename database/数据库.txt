@@ -1,0 +1,189 @@
+create database logistics;
+
+use logistics;
+
+
+-- auto-generated definition
+create table information_job
+(
+    job_id                bigint        not null comment '招聘资讯表唯一标识',
+    job_name              varchar(20)   not null comment '岗位名',
+    job_require           longtext      not null comment '岗位要求',
+    job_require_format    longtext      not null comment '岗位要求的html格式',
+    job_location          varchar(50)   not null comment '工作地点',
+    job_require_education varchar(30)   not null comment '学历要求',
+    job_require_year_num  varchar(30)   null comment '要求的工作年限',
+    job_salary            varchar(30)   not null comment '薪资范围',
+    job_type              varchar(20)   not null comment '职位类型',
+    insert_time           date          not null comment '发布日期',
+    job_died_date         date          not null comment '截止日期',
+    job_people_count      int           not null comment '需要人数',
+    job_duty              longtext      not null comment '工作职责',
+    job_duty_format       longtext      not null comment '工作职责的html格式',
+    job_contact           varchar(30)   not null comment '联系方式',
+    job_deleted           int default 0 not null comment '逻辑删除字段',
+    constraint job_information_job_id_uindex
+        unique (job_id)
+)
+    comment '招聘资讯表';
+
+alter table information_job
+    add primary key (job_id);
+
+-- auto-generated definition
+create table information_news
+(
+    news_id             bigint        not null comment '新闻资讯表唯一标识',
+    news_title          varchar(30)   not null comment '新闻标题',
+    insert_time         date          null comment '发布日期',
+    news_author         varchar(20)   not null comment '发布者',
+    news_context        longtext      not null comment '发布内容',
+    news_context_format longtext      not null comment '发布内容的html格式',
+    news_deleted        int default 0 not null comment '逻辑删除字段',
+    constraint news_information_news_id_uindex
+        unique (news_id)
+)
+    comment '新闻资讯表';
+
+alter table information_news
+    add primary key (news_id);
+
+-- auto-generated definition
+create table logistics_express
+(
+    express_id                  bigint        not null comment '快递产品表唯一标识',
+    express_product             varchar(30)   not null comment '产品名',
+    express_accounting_rule_out varchar(50)   not null comment '省外计费规则',
+    express_accounting_rule_in  varchar(50)   not null comment '省内计费规则',
+    express_deleted             int default 0 not null comment '逻辑删除字段',
+    constraint logistics_expressage_expressage_id_uindex
+        unique (express_id),
+    constraint logistics_expressage_expressage_product_uindex
+        unique (express_product)
+)
+    comment '快递产品服务表';
+
+alter table logistics_express
+    add primary key (express_id);
+
+-- auto-generated definition
+create table logistics_package
+(
+    package_id      bigint         not null comment '包装服务表唯一标识',
+    package_name    varchar(30)    not null comment '包装服务名',
+    package_size    varchar(50)    not null comment '包装尺寸详情',
+    package_weight  decimal(10, 3) not null comment '重量',
+    package_volume  decimal(10, 3) not null comment '体积',
+    package_price   decimal(10, 3) null comment '价格',
+    package_deleted int default 0  not null comment '逻辑删除字段',
+    constraint logistics_package_package_id_uindex
+        unique (package_id),
+    constraint logistics_package_package_name_uindex
+        unique (package_name)
+)
+    comment '包装服务表';
+
+alter table logistics_package
+    add primary key (package_id);
+
+-- auto-generated definition
+create table logistics_user
+(
+    user_id       bigint        not null comment '用户信息表唯一标识',
+    user_account  char(11)      not null comment '用户账户（手机号）',
+    user_password varchar(120)  not null comment '用户密码',
+    insert_time   date          not null comment '用户创建时间',
+    user_deleted  int default 0 not null comment '逻辑删除字段',
+    constraint logistics_user_user_account_uindex
+        unique (user_account),
+    constraint logistics_user_user_id_uindex
+        unique (user_id)
+)
+    comment '用户信息表';
+
+alter table logistics_user
+    add primary key (user_id);
+
+-- auto-generated definition
+create table logistics_user_address
+(
+    address_id              bigint        not null comment '地址簿唯一标识',
+    address_name            varchar(30)   not null comment '改地址绑定的用户名',
+    address_phone           char(11)      not null comment '该地址绑定的手机号',
+    address_location        varchar(50)   not null comment '该地址所在地区（省市区）',
+    address_location_detail varchar(50)   not null comment '该地址所在地区的详细地址（某某镇多少号）',
+    address_company         varchar(20)   null comment '公司名',
+    address_phone_fixed     varchar(20)   null comment '固定手机号',
+    user_account            char(11)      not null comment '该地址簿属于哪个用户',
+    address_deleted         int default 0 not null comment '逻辑删除字段',
+    constraint logistics_user_address_address_id_uindex
+        unique (address_id),
+    constraint address_user_fk
+        foreign key (user_account) references logistics_user (user_account)
+)
+    comment '用户地址簿';
+
+alter table logistics_user_address
+    add primary key (address_id);
+
+-- auto-generated definition
+create table logistics_user_order
+(
+    order_id                  bigint         not null comment '用户订单唯一标识（运单号）',
+    order_name_from           varchar(20)    not null comment '寄件人姓名',
+    order_phone_from          char(11)       not null comment '寄件人电话',
+    order_company_from        varchar(20)    null comment '寄件人公司名称',
+    order_fixed_phone_from    varchar(20)    null comment '寄件人固定电话',
+    order_name_to             varchar(20)    not null comment '收件人姓名',
+    order_phone_to            char(11)       not null comment '收件人电话',
+    order_company_to          varchar(20)    null comment '收件人公司名称',
+    order_fixed_phone_to      varchar(20)    null comment '收件人固定电话',
+    order_address_from        varchar(120)   not null comment '寄件地址',
+    order_address_from_detail varchar(50)    not null comment '寄件详细地址',
+    order_address_to          varchar(120)   not null comment '收件地址',
+    order_address_to_detail   varchar(50)    not null comment '收件详细地址',
+    order_weight              decimal(10, 3) null comment '寄送物品重量',
+    express_product           varchar(30)    not null comment '快递服务名',
+    order_item_type           varchar(20)    null comment '寄送物品类型',
+    order_status              int            not null comment '订单状态（1、待处理，2、进行中，3、已完成）',
+    order_price               decimal(10, 3) not null comment '运费',
+    insert_time               datetime       not null comment '下单时间',
+    order_time_send           datetime       null comment '寄出时间',
+    order_time_signer         datetime       null comment '签收时间',
+    user_account              char(11)       not null comment '属于哪个用户',
+    order_user_detail         varchar(50)    null comment '用户备注',
+    order_payment             int            not null comment '支付方式（1、到付，2、现付）',
+    order_location_reach_num  int default 0  not null comment '经过几个城市了',
+    order_deleted             int default 0  not null comment '逻辑删除字段',
+    constraint logistics_user_order_order_id_uindex
+        unique (order_id),
+    constraint order_express_fk
+        foreign key (express_product) references logistics_express (express_product),
+    constraint order_user_fk
+        foreign key (user_account) references logistics_user (user_account)
+)
+    comment '用户订单表';
+
+alter table logistics_user_order
+    add primary key (order_id);
+
+-- auto-generated definition
+create table logistics_user_order_path
+(
+    path_id                   bigint         not null comment '路线id',
+    path_location_reach       varchar(50)    not null comment '已经到达过的城市',
+    path_location_reach_order int            not null comment '此城市是第几个到达的',
+    path_location_latitude    decimal(10, 5) not null comment '经度',
+    path_location_longitude   decimal(10, 5) not null comment '纬度',
+    order_id                  bigint         not null comment '属于哪个订单的路线',
+    path_deleted              int default 0  not null,
+    constraint logistics_user_order_path_path_id_uindex
+        unique (path_id),
+    constraint path_order_pk
+        foreign key (order_id) references logistics_user_order (order_id)
+)
+    comment '快递路线';
+
+alter table logistics_user_order_path
+    add primary key (path_id);
+
